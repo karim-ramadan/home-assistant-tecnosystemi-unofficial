@@ -1,7 +1,1 @@
-[dev]
-homeassistant = ">=2024.1.0"
-
-[dev.extra]
-# Full HA for running locally
-homeassistant = ">=2024.1.0"
-tecnosystemy-unofficial = ">=0.3.0"
+homeassistant
