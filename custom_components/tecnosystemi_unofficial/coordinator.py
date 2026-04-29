@@ -18,7 +18,7 @@ _LOGGER = logging.getLogger(__name__)
 POLL_INTERVAL = timedelta(seconds=60)
 
 
-class TecnosistemiCoordinator(DataUpdateCoordinator[dict]):
+class TecnosystemiCoordinator(DataUpdateCoordinator[dict]):
     """Coordinator that polls a single Tecnosistemi Pico device."""
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:

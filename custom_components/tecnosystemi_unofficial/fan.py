@@ -13,7 +13,7 @@ from homeassistant.util.percentage import (
 )
 
 from .const import DOMAIN, MODE_TO_PRESET, ORDERED_SPEED_LIST, PRESET_MODE_MAP
-from .coordinator import TecnosistemiCoordinator
+from .coordinator import TecnosystemiCoordinator
 
 
 async def async_setup_entry(
@@ -21,11 +21,11 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    coordinator: TecnosistemiCoordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator: TecnosystemiCoordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_entities([TecnosistemiFan(coordinator)])
 
 
-class TecnosistemiFan(CoordinatorEntity[TecnosistemiCoordinator], FanEntity):
+class TecnosistemiFan(CoordinatorEntity[TecnosystemiCoordinator], FanEntity):
     """Fan entity representing a Tecnosistemi Pico VMC unit."""
 
     _attr_has_entity_name = True
@@ -33,7 +33,7 @@ class TecnosistemiFan(CoordinatorEntity[TecnosistemiCoordinator], FanEntity):
     _attr_preset_modes = list(PRESET_MODE_MAP.keys())
     _attr_supported_features = FanEntityFeature.SET_SPEED | FanEntityFeature.PRESET_MODE
 
-    def __init__(self, coordinator: TecnosistemiCoordinator) -> None:
+    def __init__(self, coordinator: TecnosystemiCoordinator) -> None:
         super().__init__(coordinator)
         ip = coordinator.config_entry.data["ip"]
         serial = coordinator.config_entry.data.get("serial", ip)

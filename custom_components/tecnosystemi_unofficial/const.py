@@ -1,6 +1,6 @@
 """Constants for the Tecnosistemi integration."""
 
-DOMAIN = "tecnosistemi"
+DOMAIN = "tecnosystemi_unofficial"
 
 CONF_IP = "ip"
 CONF_PIN = "pin"

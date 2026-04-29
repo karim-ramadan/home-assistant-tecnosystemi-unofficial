@@ -17,7 +17,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
-from .coordinator import TecnosistemiCoordinator
+from .coordinator import TecnosystemiCoordinator
 
 
 @dataclass(frozen=True)
@@ -62,21 +62,21 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    coordinator: TecnosistemiCoordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator: TecnosystemiCoordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_entities(
         TecnosistemiSensor(coordinator, description)
         for description in SENSOR_DESCRIPTIONS
     )
 
 
-class TecnosistemiSensor(CoordinatorEntity[TecnosistemiCoordinator], SensorEntity):
+class TecnosistemiSensor(CoordinatorEntity[TecnosystemiCoordinator], SensorEntity):
     """A sensor entity that reads one field from the device state."""
 
     entity_description: TecnosistemiSensorDescription
 
     def __init__(
         self,
-        coordinator: TecnosistemiCoordinator,
+        coordinator: TecnosystemiCoordinator,
         description: TecnosistemiSensorDescription,
     ) -> None:
         super().__init__(coordinator)
