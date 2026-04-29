@@ -1,0 +1,11 @@
+{
+  "domain": "tecnosystemi_unofficial",
+  "name": "Tecnosystemi (Unofficial)",
+  "codeowners": [],
+  "config_flow": true,
+  "documentation": "https://github.com/karimemam/tecnosystemy_unofficial",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "requirements": ["tecnosystemy-unofficial>=0.3.0"],
+  "version": "0.1.0"
+}
