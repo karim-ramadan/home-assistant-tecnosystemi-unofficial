@@ -1,4 +1,5 @@
 """Sensor entities for Tecnosistemi VMC devices."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -23,6 +24,7 @@ from .coordinator import TecnosystemiCoordinator
 @dataclass(frozen=True)
 class TecnosistemiSensorDescription(SensorEntityDescription):
     """Description for a Tecnosistemi sensor, including the state dict key."""
+
     state_key: str = ""
 
 
@@ -65,7 +67,10 @@ async def async_setup_entry(
     coordinator: TecnosystemiCoordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_entities(
         [
-            *(TecnosistemiSensor(coordinator, description) for description in SENSOR_DESCRIPTIONS),
+            *(
+                TecnosistemiSensor(coordinator, description)
+                for description in SENSOR_DESCRIPTIONS
+            ),
             TecnosistemiLedColorSensor(coordinator),
         ]
     )
@@ -105,7 +110,9 @@ class TecnosistemiSensor(CoordinatorEntity[TecnosystemiCoordinator], SensorEntit
         return self.coordinator.data.get(self.entity_description.state_key)
 
 
-class TecnosistemiLedColorSensor(CoordinatorEntity[TecnosystemiCoordinator], SensorEntity):
+class TecnosistemiLedColorSensor(
+    CoordinatorEntity[TecnosystemiCoordinator], SensorEntity
+):
     """Sensor that exposes the LED color for the current operating mode."""
 
     _attr_has_entity_name = True

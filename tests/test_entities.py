@@ -1,4 +1,5 @@
 """Tests for fan and sensor entities."""
+
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -6,7 +7,12 @@ from homeassistant.components.fan import DOMAIN as FAN_DOMAIN
 from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.tecnosystemi_unofficial.const import CONF_IP, CONF_PIN, CONF_SERIAL, DOMAIN
+from custom_components.tecnosystemi_unofficial.const import (
+    CONF_IP,
+    CONF_PIN,
+    CONF_SERIAL,
+    DOMAIN,
+)
 
 MOCK_IP = "192.168.1.100"
 MOCK_PIN = "1234"
@@ -36,7 +42,9 @@ async def loaded_entry(hass: HomeAssistant):
 
     with (
         patch("custom_components.tecnosystemi_unofficial.coordinator.TecnoClient"),
-        patch("custom_components.tecnosystemi_unofficial.coordinator.PicoDevice") as mock_pico_cls,
+        patch(
+            "custom_components.tecnosystemi_unofficial.coordinator.PicoDevice"
+        ) as mock_pico_cls,
     ):
         mock_pico = mock_pico_cls.return_value
         mock_pico.get_info = AsyncMock(return_value=MOCK_INFO)

@@ -1,4 +1,5 @@
 """Config flow for Tecnosistemi integration."""
+
 from __future__ import annotations
 
 import json
@@ -23,13 +24,18 @@ RECV_PORT = 40069
 # Sync helpers — all run in executor
 # ---------------------------------------------------------------------------
 
-def _do_discovery(subnets: list[str] = COMMON_SUBNETS, timeout: float = 2.0) -> list[str]:
+
+def _do_discovery(
+    subnets: list[str] = COMMON_SUBNETS, timeout: float = 2.0
+) -> list[str]:
     """Broadcast UDP probe and return responding device IPs."""
     from tecnosystemi_unofficial.shared_listener import SharedUDPListener
 
     found: list[str] = []
     lock = threading.Lock()
-    probe = json.dumps({"cmd": "pico_info", "pin": "-1", "idp": 1, "frm": "app"}).encode()
+    probe = json.dumps(
+        {"cmd": "pico_info", "pin": "-1", "idp": 1, "frm": "app"}
+    ).encode()
 
     def on_packet(packet: dict, addr: tuple) -> None:
         if packet.get("res") in (1, 99):
@@ -63,7 +69,9 @@ async def _validate_and_fetch_info(ip: str, pin: str) -> dict | None:
     from tecnosystemi_unofficial import TecnoClient
     from tecnosystemi_unofficial.devices import PicoDevice
 
-    async with TecnoClient(ip=ip, idp_manager=IDPManager(backend="file", path=Path(".idp.store"))) as client:
+    async with TecnoClient(
+        ip=ip, idp_manager=IDPManager(backend="file", path=Path(".idp.store"))
+    ) as client:
         pico = PicoDevice(client, pin=pin)
         try:
             if not await pico.check_pin():
@@ -76,6 +84,7 @@ async def _validate_and_fetch_info(ip: str, pin: str) -> dict | None:
 # ---------------------------------------------------------------------------
 # Config flow
 # ---------------------------------------------------------------------------
+
 
 class TecnosistemiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle the Tecnosistemi config flow."""

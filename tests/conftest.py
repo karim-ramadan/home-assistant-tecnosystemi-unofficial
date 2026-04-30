@@ -1,4 +1,5 @@
 """Pytest configuration for Tecnosistemi HA integration tests."""
+
 import pytest
 
 

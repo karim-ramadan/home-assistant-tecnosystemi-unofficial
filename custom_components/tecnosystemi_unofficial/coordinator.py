@@ -1,4 +1,5 @@
 """DataUpdateCoordinator for Tecnosistemi devices."""
+
 from __future__ import annotations
 
 import asyncio
@@ -55,7 +56,9 @@ class TecnosystemiCoordinator(DataUpdateCoordinator[dict]):
                 self.device_info_data = info
         except Exception as exc:
             self._client.stop()
-            raise ConfigEntryNotReady(f"Failed to connect to {self._ip}: {exc}") from exc
+            raise ConfigEntryNotReady(
+                f"Failed to connect to {self._ip}: {exc}"
+            ) from exc
 
     async def async_shutdown(self) -> None:
         """Stop the underlying client."""

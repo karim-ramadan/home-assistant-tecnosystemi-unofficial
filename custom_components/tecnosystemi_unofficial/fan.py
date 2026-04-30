@@ -1,4 +1,5 @@
 """Fan entity for Tecnosistemi VMC devices."""
+
 from __future__ import annotations
 
 from homeassistant.components.fan import FanEntity, FanEntityFeature
@@ -12,7 +13,13 @@ from homeassistant.util.percentage import (
     percentage_to_ordered_list_item,
 )
 
-from .const import DOMAIN, MODE_LED_COLORS, MODE_TO_PRESET, ORDERED_SPEED_LIST, PRESET_MODE_MAP
+from .const import (
+    DOMAIN,
+    MODE_LED_COLORS,
+    MODE_TO_PRESET,
+    ORDERED_SPEED_LIST,
+    PRESET_MODE_MAP,
+)
 from .coordinator import TecnosystemiCoordinator
 
 
