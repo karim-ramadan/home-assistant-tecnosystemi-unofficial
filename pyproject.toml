@@ -13,7 +13,7 @@ dev = [
     "pytest-asyncio",
     "tecnosystemi-unofficial>=0.4.1",
     "pre-commit==3.7.0",
-    "black==24.4.2",
+    "black==26.3.1",
     "flake8==7.1.0"
 ]
 
