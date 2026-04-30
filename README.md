@@ -65,4 +65,4 @@ Copy the `custom_components/tecnosystemi/` folder into your HA `config/custom_co
 
 ## Related
 
-- [tecnosystemy-unofficial](https://github.com/karimemam/tecnosystemy_unofficial) — the underlying Python library and CLI
+- [tecnosystemy-unofficial](https://github.com/karimemam/tecnosystemi_unofficial) — the underlying Python library and CLI

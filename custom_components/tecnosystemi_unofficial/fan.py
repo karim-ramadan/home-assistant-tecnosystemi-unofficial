@@ -12,7 +12,7 @@ from homeassistant.util.percentage import (
     percentage_to_ordered_list_item,
 )
 
-from .const import DOMAIN, MODE_TO_PRESET, ORDERED_SPEED_LIST, PRESET_MODE_MAP
+from .const import DOMAIN, MODE_LED_COLORS, MODE_TO_PRESET, ORDERED_SPEED_LIST, PRESET_MODE_MAP
 from .coordinator import TecnosystemiCoordinator
 
 
@@ -31,7 +31,12 @@ class TecnosistemiFan(CoordinatorEntity[TecnosystemiCoordinator], FanEntity):
     _attr_has_entity_name = True
     _attr_name = None  # entity name = device name
     _attr_preset_modes = list(PRESET_MODE_MAP.keys())
-    _attr_supported_features = FanEntityFeature.SET_SPEED | FanEntityFeature.PRESET_MODE
+    _attr_supported_features = (
+        FanEntityFeature.SET_SPEED
+        | FanEntityFeature.PRESET_MODE
+        | FanEntityFeature.TURN_ON
+        | FanEntityFeature.TURN_OFF
+    )
 
     def __init__(self, coordinator: TecnosystemiCoordinator) -> None:
         super().__init__(coordinator)
@@ -81,6 +86,19 @@ class TecnosistemiFan(CoordinatorEntity[TecnosystemiCoordinator], FanEntity):
             return None
         mode = self.coordinator.data.get("mod")
         return MODE_TO_PRESET.get(mode)
+
+    @property
+    def extra_state_attributes(self) -> dict | None:
+        if not self.coordinator.data:
+            return None
+        mode = self.coordinator.data.get("mod")
+        color = MODE_LED_COLORS.get(mode) if mode is not None else None
+        if color is None:
+            return None
+        return {
+            "led_color_name": color[0],
+            "led_color_hex": color[1],
+        }
 
     # ------------------------------------------------------------------
     # Service calls

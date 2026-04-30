@@ -3,9 +3,9 @@
   "name": "Tecnosystemi (Unofficial)",
   "codeowners": [],
   "config_flow": true,
-  "documentation": "https://github.com/karimemam/tecnosystemy_unofficial",
+  "documentation": "https://github.com/karimemam/tecnosystemi_unofficial",
   "integration_type": "device",
   "iot_class": "local_polling",
-  "requirements": ["tecnosystemy-unofficial>=0.3.0"],
+  "requirements": ["tecnosystemi-unofficial>=0.4.1"],
   "version": "0.1.0"
 }
