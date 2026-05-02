@@ -1,5 +1,4 @@
 {
   "name": "Tecnosystemi (Unofficial)",
-  "hacs": "1.6.0",
-  "homeassistant": "0.118.0"
+  "homeassistant": "2022.3.0"
 }
