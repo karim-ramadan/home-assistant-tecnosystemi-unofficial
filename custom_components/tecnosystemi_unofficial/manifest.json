@@ -4,9 +4,9 @@
   "codeowners": [],
   "config_flow": true,
   "documentation": "https://github.com/karim-ramadan/home-assistant-tecnosystemi-unofficial",
-  "issue_tracker": "https://github.com/karim-ramadan/home-assistant-tecnosystemi-unofficial/issues",
-  "integration_type": "device",
   "iot_class": "local_polling",
+  "integration_type": "device",
+  "issue_tracker": "https://github.com/karim-ramadan/home-assistant-tecnosystemi-unofficial/issues",
   "requirements": ["tecnosystemi-unofficial>=0.4.1"],
   "version": "0.1.0"
 }
