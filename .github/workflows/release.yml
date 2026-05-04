@@ -32,7 +32,7 @@ jobs:
 
       - name: Get new version
         id: version
-        run: echo "value=$(uv version)" >> $GITHUB_OUTPUT
+        run: echo "value=$(uv version --short)" >> $GITHUB_OUTPUT
 
       - name: Update manifest.json
         run: |
