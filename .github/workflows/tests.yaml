@@ -23,7 +23,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: uv sync --no-sources
+        run: uv sync --frozen --no-sources
 
       - name: Run pre-commit on all files
         run: uv run --no-sources pre-commit run --all-files --show-diff-on-failure --color=always
@@ -64,7 +64,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: uv sync --no-sources
+        run: uv sync --frozen --no-sources
 
       - name: Tests suite
         run: |
