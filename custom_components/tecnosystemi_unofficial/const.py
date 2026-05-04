@@ -2,7 +2,7 @@
 
 from tecnosystemi_unofficial.devices import MODE_LED_COLORS  # noqa: F401
 
-DOMAIN = "tecnosystemi_unofficial"
+DOMAIN = "tecnosystemi"
 
 CONF_IP = "ip"
 CONF_PIN = "pin"
