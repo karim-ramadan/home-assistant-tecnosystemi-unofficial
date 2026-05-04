@@ -27,5 +27,6 @@ asyncio_mode = "auto"
 # Tell pytest-homeassistant-custom-component where the custom component lives
 testpaths = ["tests"]
 
-[tool.uv.sources]
-tecnosystemi-unofficial = { path = "../tecnosystemi_unofficial", editable = true }
+#Uncomment for local testing
+#[tool.uv.sources]
+#tecnosystemi-unofficial = { path = "../tecnosystemi_unofficial", editable = true }
