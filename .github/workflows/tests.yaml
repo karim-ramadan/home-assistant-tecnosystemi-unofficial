@@ -13,6 +13,8 @@ jobs:
   pre-commit:
     runs-on: "ubuntu-latest"
     name: Pre-commit
+    env:
+      UV_NO_SOURCES: "1"
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
@@ -54,6 +56,8 @@ jobs:
   tests:
     runs-on: "ubuntu-latest"
     name: Run tests
+    env:
+      UV_NO_SOURCES: "1"
     steps:
       - name: Check out code from GitHub
         uses: "actions/checkout@v4"
