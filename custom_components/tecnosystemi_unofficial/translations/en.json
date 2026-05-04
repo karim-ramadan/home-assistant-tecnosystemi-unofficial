@@ -16,7 +16,7 @@
       },
       "manual": {
         "title": "Device IP Address",
-        "description": "Enter the IP address of the Tecnosistemi device.",
+        "description": "Enter the IP address of the Tecnosystemi device.",
         "data": {
           "ip": "IP Address"
         }
@@ -30,7 +30,7 @@
       }
     },
     "error": {
-      "no_devices_found": "No Tecnosistemi devices were found on the network. Check that the device is powered on and connected to the same network.",
+      "no_devices_found": "No Tecnosystemi devices were found on the network. Check that the device is powered on and connected to the same network.",
       "invalid_ip": "The IP address is not valid.",
       "invalid_pin": "The PIN was rejected by the device. Please check and try again."
     },

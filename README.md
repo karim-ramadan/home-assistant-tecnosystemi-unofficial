@@ -33,29 +33,29 @@ Copy the `custom_components/tecnosystemi/` folder into your HA `config/custom_co
 
 ## Entities
 
-| Entity | Type | Description |
-|--------|------|-------------|
-| `fan.<name>` | Fan | Power, fan speed (20–100 %), operating mode preset |
-| `sensor.<name>_ambient_temperature` | Sensor | Indoor ambient temperature (°C) |
-| `sensor.<name>_external_temperature` | Sensor | Outdoor/exhaust temperature (°C) |
-| `sensor.<name>_humidity` | Sensor | Current relative humidity (%) |
+| Entity                               | Type   | Description                                        |
+| ------------------------------------ | ------ | -------------------------------------------------- |
+| `fan.<name>`                         | Fan    | Power, fan speed (20–100 %), operating mode preset |
+| `sensor.<name>_ambient_temperature`  | Sensor | Indoor ambient temperature (°C)                    |
+| `sensor.<name>_external_temperature` | Sensor | Outdoor/exhaust temperature (°C)                   |
+| `sensor.<name>_humidity`             | Sensor | Current relative humidity (%)                      |
 
 ## Operating Modes (Fan Presets)
 
-| Preset | Description |
-|--------|-------------|
-| Recupero | Balanced supply + extraction with heat recovery |
-| Estrazione | Extraction only |
-| Immissione | Supply only |
-| Auto Umidità ☀ | Humidity-controlled auto (summer) |
-| Auto Umidità ❄ | Humidity-controlled auto (winter) |
-| Comfort Estate | Comfort — summer profile |
-| Comfort Inverno | Comfort — winter profile |
-| CO₂ Recupero | CO₂-triggered heat-recovery |
-| CO₂ Estrazione | CO₂-triggered extraction |
-| Auto Umidità 2 ☀ | Secondary humidity auto (summer) |
-| Auto Umidità 2 ❄ | Secondary humidity auto (winter) |
-| Ricambio Naturale | Natural air exchange |
+| Preset            | Description                                     |
+| ----------------- | ----------------------------------------------- |
+| Recupero          | Balanced supply + extraction with heat recovery |
+| Estrazione        | Extraction only                                 |
+| Immissione        | Supply only                                     |
+| Auto Umidità ☀    | Humidity-controlled auto (summer)               |
+| Auto Umidità ❄    | Humidity-controlled auto (winter)               |
+| Comfort Estate    | Comfort — summer profile                        |
+| Comfort Inverno   | Comfort — winter profile                        |
+| CO₂ Recupero      | CO₂-triggered heat-recovery                     |
+| CO₂ Estrazione    | CO₂-triggered extraction                        |
+| Auto Umidità 2 ☀  | Secondary humidity auto (summer)                |
+| Auto Umidità 2 ❄  | Secondary humidity auto (winter)                |
+| Ricambio Naturale | Natural air exchange                            |
 
 ## Requirements
 
@@ -65,4 +65,4 @@ Copy the `custom_components/tecnosystemi/` folder into your HA `config/custom_co
 
 ## Related
 
-- [tecnosystemy-unofficial](https://github.com/karimemam/tecnosystemy_unofficial) — the underlying Python library and CLI
+- [tecnosystemy-unofficial](https://github.com/karimemam/tecnosystemi_unofficial) — the underlying Python library and CLI

@@ -3,20 +3,30 @@ name = "tecnosistemi-ha"
 version = "0.1.0"
 description = "Home Assistant integration for Tecnosistemi Pico VMC devices"
 requires-python = ">=3.12"
-dependencies = []  # Runtime deps declared in manifest.json; HA installs them
+dependencies = [
+    "awesomeversion>=24.6.0",
+]  # Runtime deps declared in manifest.json; HA installs them
 
 [dependency-groups]
 dev = [
     "pytest-homeassistant-custom-component",
     "pytest-asyncio",
-    "tecnosystemy-unofficial>=0.3.0",
+    "tecnosystemi-unofficial>=0.4.1",
+    "ruff>=0.11.8",
+    "pre-commit==3.7.0",
 ]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+ignore = ["E203", "E501"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 # Tell pytest-homeassistant-custom-component where the custom component lives
 testpaths = ["tests"]
 
-[tool.uv.sources]
-# Uncomment to use a local editable checkout of the library instead of PyPI:
-# tecnosystemy-unofficial = { path = "../tecnosystemy_unofficial", editable = true }
+#Uncomment for local testing
+#[tool.uv.sources]
+#tecnosystemi-unofficial = { path = "../tecnosystemi_unofficial", editable = true }

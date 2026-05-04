@@ -1,12 +1,18 @@
 """Tests for fan and sensor entities."""
-from unittest.mock import patch
+
+from unittest.mock import AsyncMock, patch
 
 import pytest
 from homeassistant.components.fan import DOMAIN as FAN_DOMAIN
 from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.tecnosystemi.const import CONF_IP, CONF_PIN, CONF_SERIAL, DOMAIN
+from custom_components.tecnosystemi_unofficial.const import (
+    CONF_IP,
+    CONF_PIN,
+    CONF_SERIAL,
+    DOMAIN,
+)
 
 MOCK_IP = "192.168.1.100"
 MOCK_PIN = "1234"
@@ -35,17 +41,18 @@ async def loaded_entry(hass: HomeAssistant):
     entry.add_to_hass(hass)
 
     with (
-        patch("custom_components.tecnosystemi.coordinator.TecnoClient"),
-        patch("custom_components.tecnosystemi.coordinator.IDPManager"),
-        patch("custom_components.tecnosystemi.coordinator.PicoDevice") as mock_pico_cls,
+        patch("custom_components.tecnosystemi_unofficial.coordinator.TecnoClient"),
+        patch(
+            "custom_components.tecnosystemi_unofficial.coordinator.PicoDevice"
+        ) as mock_pico_cls,
     ):
         mock_pico = mock_pico_cls.return_value
-        mock_pico.get_info.return_value = MOCK_INFO
-        mock_pico.get_state.return_value = MOCK_STATE
-        mock_pico.turn_on.return_value = True
-        mock_pico.turn_off.return_value = True
-        mock_pico.set_speed.return_value = True
-        mock_pico.set_mode.return_value = True
+        mock_pico.get_info = AsyncMock(return_value=MOCK_INFO)
+        mock_pico.get_state = AsyncMock(return_value=MOCK_STATE)
+        mock_pico.turn_on = AsyncMock(return_value=True)
+        mock_pico.turn_off = AsyncMock(return_value=True)
+        mock_pico.set_speed = AsyncMock(return_value=True)
+        mock_pico.set_mode = AsyncMock(return_value=True)
 
         await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
@@ -54,13 +61,15 @@ async def loaded_entry(hass: HomeAssistant):
 
 
 async def test_fan_state(hass: HomeAssistant, loaded_entry) -> None:
-    """Fan is on, speed=3→60%, preset=Recupero."""
+    """Fan is on, speed=3→60%, preset=Recupero, LED color=Turchese."""
     entry, _ = loaded_entry
     state = hass.states.get("fan.test_pico")
     assert state is not None
     assert state.state == "on"
     assert state.attributes["percentage"] == 60
-    assert state.attributes["preset_mode"] == "Recupero"
+    assert state.attributes["preset_mode"] == "Recupero 🔵"
+    assert state.attributes["led_color_name"] == "Turchese"
+    assert state.attributes["led_color_hex"] == "#4DB6AC"
 
 
 async def test_fan_turn_off(hass: HomeAssistant, loaded_entry) -> None:
@@ -87,7 +96,7 @@ async def test_fan_set_preset_mode(hass: HomeAssistant, loaded_entry) -> None:
     await hass.services.async_call(
         FAN_DOMAIN,
         "set_preset_mode",
-        {"entity_id": "fan.test_pico", "preset_mode": "Estrazione"},
+        {"entity_id": "fan.test_pico", "preset_mode": "Estrazione 🟢"},
         blocking=True,
     )
     mock_pico.set_mode.assert_called_once_with(2)
@@ -98,3 +107,11 @@ async def test_sensors(hass: HomeAssistant, loaded_entry) -> None:
     assert hass.states.get("sensor.test_pico_ambient_temperature").state == "21.5"
     assert hass.states.get("sensor.test_pico_external_temperature").state == "10.0"
     assert hass.states.get("sensor.test_pico_humidity").state == "55"
+
+
+async def test_led_color_sensor(hass: HomeAssistant, loaded_entry) -> None:
+    """LED color sensor reflects the color for the current mode."""
+    state = hass.states.get("sensor.test_pico_led_color")
+    assert state is not None
+    assert state.state == "Turchese"
+    assert state.attributes["led_color_hex"] == "#4DB6AC"

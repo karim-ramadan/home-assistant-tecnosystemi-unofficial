@@ -1,7 +1,9 @@
 """Config flow for Tecnosistemi integration."""
+
 from __future__ import annotations
 
 import json
+from pathlib import Path
 import socket
 import threading
 import time
@@ -10,7 +12,7 @@ from typing import Any
 import voluptuous as vol
 
 from homeassistant import config_entries
-from homeassistant.core import HomeAssistant
+from tecnosystemi_unofficial import IDPManager
 
 from .const import COMMON_SUBNETS, CONF_IP, CONF_PIN, CONF_SERIAL, DOMAIN
 
@@ -22,13 +24,18 @@ RECV_PORT = 40069
 # Sync helpers — all run in executor
 # ---------------------------------------------------------------------------
 
-def _do_discovery(subnets: list[str] = COMMON_SUBNETS, timeout: float = 2.0) -> list[str]:
+
+def _do_discovery(
+    subnets: list[str] = COMMON_SUBNETS, timeout: float = 2.0
+) -> list[str]:
     """Broadcast UDP probe and return responding device IPs."""
-    from tecnosystemy_unofficial.shared_listener import SharedUDPListener
+    from tecnosystemi_unofficial.shared_listener import SharedUDPListener
 
     found: list[str] = []
     lock = threading.Lock()
-    probe = json.dumps({"cmd": "pico_info", "pin": "-1", "idp": 1, "frm": "app"}).encode()
+    probe = json.dumps(
+        {"cmd": "pico_info", "pin": "-1", "idp": 1, "frm": "app"}
+    ).encode()
 
     def on_packet(packet: dict, addr: tuple) -> None:
         if packet.get("res") in (1, 99):
@@ -54,30 +61,30 @@ def _do_discovery(subnets: list[str] = COMMON_SUBNETS, timeout: float = 2.0) -> 
     return found
 
 
-def _validate_and_fetch_info(ip: str, pin: str) -> dict | None:
+async def _validate_and_fetch_info(ip: str, pin: str) -> dict | None:
     """
     Validate PIN against device and return device info on success.
     Returns None if PIN is wrong or device unreachable.
     """
-    from tecnosystemy_unofficial import TecnoClient
-    from tecnosystemy_unofficial.devices import PicoDevice
+    from tecnosystemi_unofficial import TecnoClient
+    from tecnosystemi_unofficial.devices import PicoDevice
 
-    client = TecnoClient(ip=ip)
-    client.start()
-    try:
+    async with TecnoClient(
+        ip=ip, idp_manager=IDPManager(backend="file", path=Path(".idp.store"))
+    ) as client:
         pico = PicoDevice(client, pin=pin)
-        if not pico.check_pin():
+        try:
+            if not await pico.check_pin():
+                return None
+            return await pico.get_info()
+        except Exception:
             return None
-        return pico.get_info()
-    except Exception:
-        return None
-    finally:
-        client.stop()
 
 
 # ---------------------------------------------------------------------------
 # Config flow
 # ---------------------------------------------------------------------------
+
 
 class TecnosistemiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle the Tecnosistemi config flow."""
@@ -150,9 +157,7 @@ class TecnosistemiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             pin = user_input[CONF_PIN].strip()
-            info: dict | None = await self.hass.async_add_executor_job(
-                _validate_and_fetch_info, self._ip, pin
-            )
+            info: dict | None = await _validate_and_fetch_info(self._ip, pin)
 
             if info is None:
                 errors[CONF_PIN] = "invalid_pin"

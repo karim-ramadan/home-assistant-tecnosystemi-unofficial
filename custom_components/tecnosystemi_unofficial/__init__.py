@@ -1,4 +1,5 @@
 """Tecnosistemi integration setup."""
+
 from __future__ import annotations
 
 import logging
@@ -8,7 +9,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 
 from .const import DOMAIN
-from .coordinator import TecnosistemiCoordinator
+from .coordinator import TecnosystemiCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ PLATFORMS = ["fan", "sensor"]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    coordinator = TecnosistemiCoordinator(hass, entry)
+    coordinator = TecnosystemiCoordinator(hass, entry)
 
     try:
         await coordinator.async_config_entry_first_refresh()
@@ -32,6 +33,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unload_ok:
-        coordinator: TecnosistemiCoordinator = hass.data[DOMAIN].pop(entry.entry_id)
+        coordinator: TecnosystemiCoordinator = hass.data[DOMAIN].pop(entry.entry_id)
         await coordinator.async_shutdown()
     return unload_ok
