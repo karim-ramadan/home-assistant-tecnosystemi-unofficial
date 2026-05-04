@@ -7,7 +7,7 @@ from homeassistant.components.fan import DOMAIN as FAN_DOMAIN
 from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.tecnosystemi_unofficial.const import (
+from custom_components.tecnosystemi.const import (
     CONF_IP,
     CONF_PIN,
     CONF_SERIAL,
@@ -41,10 +41,8 @@ async def loaded_entry(hass: HomeAssistant):
     entry.add_to_hass(hass)
 
     with (
-        patch("custom_components.tecnosystemi_unofficial.coordinator.TecnoClient"),
-        patch(
-            "custom_components.tecnosystemi_unofficial.coordinator.PicoDevice"
-        ) as mock_pico_cls,
+        patch("custom_components.tecnosystemi.coordinator.TecnoClient"),
+        patch("custom_components.tecnosystemi.coordinator.PicoDevice") as mock_pico_cls,
     ):
         mock_pico = mock_pico_cls.return_value
         mock_pico.get_info = AsyncMock(return_value=MOCK_INFO)
