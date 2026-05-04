@@ -6,7 +6,7 @@ import pytest
 from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.tecnosystemi_unofficial.const import (
+from custom_components.tecnosystemi.const import (
     CONF_IP,
     CONF_PIN,
     CONF_SERIAL,
@@ -35,7 +35,7 @@ MOCK_STATE = {
 @pytest.fixture
 def mock_validate_and_fetch_info():
     with patch(
-        "custom_components.tecnosystemi_unofficial.config_flow._validate_and_fetch_info",
+        "custom_components.tecnosystemi.config_flow._validate_and_fetch_info",
         new_callable=AsyncMock,
         return_value=MOCK_INFO,
     ) as mock:
@@ -45,7 +45,7 @@ def mock_validate_and_fetch_info():
 @pytest.fixture
 def mock_discovery():
     with patch(
-        "custom_components.tecnosystemi_unofficial.config_flow._do_discovery",
+        "custom_components.tecnosystemi.config_flow._do_discovery",
         return_value=[MOCK_IP],
     ) as mock:
         yield mock
@@ -55,10 +55,8 @@ def mock_discovery():
 def mock_coordinator_setup():
     """Patch TecnoClient so no real UDP calls happen during coordinator setup."""
     with (
-        patch("custom_components.tecnosystemi_unofficial.coordinator.TecnoClient"),
-        patch(
-            "custom_components.tecnosystemi_unofficial.coordinator.PicoDevice"
-        ) as mock_pico_cls,
+        patch("custom_components.tecnosystemi.coordinator.TecnoClient"),
+        patch("custom_components.tecnosystemi.coordinator.PicoDevice") as mock_pico_cls,
     ):
         mock_pico = mock_pico_cls.return_value
         mock_pico.get_info = AsyncMock(return_value=MOCK_INFO)
@@ -149,7 +147,7 @@ async def test_config_flow_invalid_pin(
     )
 
     with patch(
-        "custom_components.tecnosystemi_unofficial.config_flow._validate_and_fetch_info",
+        "custom_components.tecnosystemi.config_flow._validate_and_fetch_info",
         return_value=None,  # PIN rejected
     ):
         result = await hass.config_entries.flow.async_configure(
@@ -169,7 +167,7 @@ async def test_config_flow_no_devices_found(
         DOMAIN, context={"source": "user"}
     )
     with patch(
-        "custom_components.tecnosystemi_unofficial.config_flow._do_discovery",
+        "custom_components.tecnosystemi.config_flow._do_discovery",
         return_value=[],
     ):
         result = await hass.config_entries.flow.async_configure(
