@@ -76,26 +76,33 @@ class TecnosystemiCoordinator(DataUpdateCoordinator[dict]):
             raise UpdateFailed(f"No response from {self._ip} (timeout)")
         return state
 
-    # ------------------------------------------------------------------
-    # Control helpers (serialize with lock, then refresh)
-    # ------------------------------------------------------------------
+    def _merge_data(self, patch: dict) -> dict:
+        return {**(self.data or {}), **patch}
 
     async def async_turn_on(self) -> None:
         async with self._lock:
-            await self.pico.turn_on()
-        await self.async_request_refresh()
+            res = await self.pico.turn_on()
+            if res:
+                self.async_set_updated_data(self._merge_data({"on_off": 1}))
 
     async def async_turn_off(self) -> None:
         async with self._lock:
-            await self.pico.turn_off()
-        await self.async_request_refresh()
+            res = await self.pico.turn_off()
+            if res:
+                self.async_set_updated_data(self._merge_data({"on_off": 2}))
 
     async def async_set_speed(self, speed: int) -> None:
         async with self._lock:
-            await self.pico.set_speed(speed)
-        await self.async_request_refresh()
+            if self.data.get("on_off") != 1:
+                await self.pico.turn_on()
+            res = await self.pico.set_speed(speed)
+            if res:
+                self.async_set_updated_data(self._merge_data({
+                    "on_off": 1,
+                    "speed": speed}))
 
     async def async_set_mode(self, mode: int) -> None:
         async with self._lock:
-            await self.pico.set_mode(mode)
-        await self.async_request_refresh()
+            res = await self.pico.set_mode(mode)
+            if res:
+                self.async_set_updated_data(self._merge_data({"mod": mode}))
