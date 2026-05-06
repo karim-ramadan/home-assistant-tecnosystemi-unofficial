@@ -30,4 +30,4 @@ PRESET_MODE_MAP: dict[str, int] = {
 MODE_TO_PRESET: dict[int, str] = {v: k for k, v in PRESET_MODE_MAP.items()}
 
 # Ordered speed list used with HA percentage helpers (index 0 = slowest)
-ORDERED_SPEED_LIST = ["1", "2", "3", "4", "5"]
+ORDERED_SPEED_LIST = ["1", "2", "3"]
