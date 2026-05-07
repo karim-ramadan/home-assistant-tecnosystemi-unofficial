@@ -97,9 +97,9 @@ class TecnosystemiCoordinator(DataUpdateCoordinator[dict]):
                 await self.pico.turn_on()
             res = await self.pico.set_speed(speed)
             if res:
-                self.async_set_updated_data(self._merge_data({
-                    "on_off": 1,
-                    "speed": speed}))
+                self.async_set_updated_data(
+                    self._merge_data({"on_off": 1, "speed": speed})
+                )
 
     async def async_set_mode(self, mode: int) -> None:
         async with self._lock:
