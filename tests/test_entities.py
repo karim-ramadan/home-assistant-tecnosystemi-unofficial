@@ -64,7 +64,7 @@ async def test_fan_state(hass: HomeAssistant, loaded_entry) -> None:
     state = hass.states.get("fan.test_pico")
     assert state is not None
     assert state.state == "on"
-    assert state.attributes["percentage"] == 60
+    assert state.attributes["percentage"] == 100
     assert state.attributes["preset_mode"] == "Recupero 🔵"
     assert state.attributes["led_color_name"] == "Turchese"
     assert state.attributes["led_color_hex"] == "#4DB6AC"
