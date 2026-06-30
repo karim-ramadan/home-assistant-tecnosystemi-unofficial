@@ -1,0 +1,27 @@
+version: "3"
+
+tasks:
+  install:
+    desc: Install dependencies
+    cmd: uv sync --frozen
+
+  pre-commit:
+    desc: Run pre-commit on all files (mirrors CI pre-commit job)
+    deps: [install]
+    cmd: uv run pre-commit run --all-files --show-diff-on-failure --color=always
+
+  tests:
+    desc: Run test suite (mirrors CI tests job)
+    deps: [install]
+    cmd: uv run pytest --timeout=9 --durations=10 -n auto -p no:sugar tests
+
+  fix:
+    desc: Auto-fix linting and formatting issues with ruff
+    deps: [install]
+    cmds:
+      - uv run ruff check --fix .
+      - uv run ruff format .
+
+  ci:
+    desc: Run all locally executable CI steps (pre-commit + tests)
+    deps: [pre-commit, tests]

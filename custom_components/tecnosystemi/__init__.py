@@ -21,7 +21,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     device_type = entry.data.get(CONF_DEVICE_TYPE, "pico")
 
     if device_type == DEVICE_TYPE_POLARIS5X:
-        coordinator: Polaris5XCoordinator | TecnosystemiCoordinator = Polaris5XCoordinator(hass, entry)
+        coordinator: Polaris5XCoordinator | TecnosystemiCoordinator = (
+            Polaris5XCoordinator(hass, entry)
+        )
         platforms = _POLARIS_PLATFORMS
     else:
         coordinator = TecnosystemiCoordinator(hass, entry)
@@ -40,7 +42,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     device_type = entry.data.get(CONF_DEVICE_TYPE, "pico")
-    platforms = _POLARIS_PLATFORMS if device_type == DEVICE_TYPE_POLARIS5X else _PICO_PLATFORMS
+    platforms = (
+        _POLARIS_PLATFORMS if device_type == DEVICE_TYPE_POLARIS5X else _PICO_PLATFORMS
+    )
 
     unload_ok = await hass.config_entries.async_unload_platforms(entry, platforms)
     if unload_ok:

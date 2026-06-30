@@ -262,9 +262,12 @@ def mock_validate_polaris_and_fetch_info():
 
 @pytest.fixture
 def mock_polaris_coordinator_setup():
-    with patch("custom_components.tecnosystemi.coordinator.PolarisClient"), patch(
-        "custom_components.tecnosystemi.coordinator.Polaris5XDevice"
-    ) as mock_dev_cls:
+    with (
+        patch("custom_components.tecnosystemi.coordinator.PolarisClient"),
+        patch(
+            "custom_components.tecnosystemi.coordinator.Polaris5XDevice"
+        ) as mock_dev_cls,
+    ):
         mock_dev = mock_dev_cls.return_value
         mock_dev.get_state = AsyncMock(return_value=MOCK_POLARIS_STATE)
         mock_dev.turn_on = AsyncMock(return_value=True)

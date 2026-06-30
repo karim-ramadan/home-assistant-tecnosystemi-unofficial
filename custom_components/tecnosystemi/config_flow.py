@@ -205,7 +205,9 @@ class TecnosistemiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             pin = user_input[CONF_PIN].strip()
 
             if self._device_type == DEVICE_TYPE_POLARIS5X:
-                info: dict | None = await _validate_polaris_and_fetch_info(self._ip, pin)
+                info: dict | None = await _validate_polaris_and_fetch_info(
+                    self._ip, pin
+                )
                 serial: str = self._ip  # Polaris 5X has no serial field
             else:
                 info = await _validate_and_fetch_info(self._ip, pin)

@@ -25,9 +25,17 @@ _HVAC_MODE_TO_OP_MODE: dict[HVACMode, int] = {
     HVACMode.FAN_ONLY: 3,
 }
 
-_OP_MODE_TO_HVAC_MODE: dict[int, HVACMode] = {v: k for k, v in _HVAC_MODE_TO_OP_MODE.items()}
+_OP_MODE_TO_HVAC_MODE: dict[int, HVACMode] = {
+    v: k for k, v in _HVAC_MODE_TO_OP_MODE.items()
+}
 
-_ALL_HVAC_MODES = [HVACMode.OFF, HVACMode.HEAT, HVACMode.COOL, HVACMode.DRY, HVACMode.FAN_ONLY]
+_ALL_HVAC_MODES = [
+    HVACMode.OFF,
+    HVACMode.HEAT,
+    HVACMode.COOL,
+    HVACMode.DRY,
+    HVACMode.FAN_ONLY,
+]
 
 
 def _get(state: dict, *keys, default=0):
@@ -203,6 +211,7 @@ class Polaris5XZoneClimate(CoordinatorEntity[Polaris5XCoordinator], ClimateEntit
     @property
     def current_temperature(self) -> float | None:
         from tecnosystemi_unofficial.devices import Polaris5XDevice
+
         zone = self._zone_data()
         return Polaris5XDevice.parse_zone_temperature(zone.get("t"))
 

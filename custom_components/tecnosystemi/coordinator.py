@@ -29,6 +29,7 @@ def _zone_fan(z: dict) -> int:
     v = z.get("fan", z.get("w", -1))
     return v if v is not None else -1
 
+
 _LOGGER = logging.getLogger(__name__)
 
 POLL_INTERVAL = timedelta(seconds=60)
@@ -211,9 +212,23 @@ class Polaris5XCoordinator(DataUpdateCoordinator[dict]):
             res = await self.polaris.set_mode(mode)
             if res:
                 if mode == 0:  # HEATING
-                    patch = {"is_off": 0, "off": 0, "is_cool": 0, "cl": 0, "cool_mod": 0, "cl_m": 0}
+                    patch = {
+                        "is_off": 0,
+                        "off": 0,
+                        "is_cool": 0,
+                        "cl": 0,
+                        "cool_mod": 0,
+                        "cl_m": 0,
+                    }
                 else:
-                    patch = {"is_off": 0, "off": 0, "is_cool": 1, "cl": 1, "cool_mod": mode, "cl_m": mode}
+                    patch = {
+                        "is_off": 0,
+                        "off": 0,
+                        "is_cool": 1,
+                        "cl": 1,
+                        "cool_mod": mode,
+                        "cl_m": mode,
+                    }
                 self.async_set_updated_data(self._merge_data(patch))
 
     async def async_set_canal_temperature(self, temp: float) -> None:
@@ -252,7 +267,13 @@ class Polaris5XCoordinator(DataUpdateCoordinator[dict]):
                 zones = list(current.get("zone", []))
                 for i, z in enumerate(zones):
                     if _zone_id(z) == zone_id:
-                        updated = {**z, "is_off": is_off, "off": is_off, "t_set": raw_set, "ts": raw_set}
+                        updated = {
+                            **z,
+                            "is_off": is_off,
+                            "off": is_off,
+                            "t_set": raw_set,
+                            "ts": raw_set,
+                        }
                         if fan_set is not None and fan_set != -1:
                             updated["fan_set"] = fan_set
                         zones[i] = updated

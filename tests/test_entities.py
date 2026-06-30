@@ -14,7 +14,6 @@ from custom_components.tecnosystemi.const import (
     CONF_IP,
     CONF_PIN,
     CONF_SERIAL,
-    DEVICE_TYPE_PICO,
     DEVICE_TYPE_POLARIS5X,
     DOMAIN,
 )
@@ -181,7 +180,9 @@ async def loaded_polaris_entry(hass: HomeAssistant):
 
     with (
         patch("custom_components.tecnosystemi.coordinator.PolarisClient"),
-        patch("custom_components.tecnosystemi.coordinator.Polaris5XDevice") as mock_dev_cls,
+        patch(
+            "custom_components.tecnosystemi.coordinator.Polaris5XDevice"
+        ) as mock_dev_cls,
     ):
         mock_dev = mock_dev_cls.return_value
         mock_dev.get_state = AsyncMock(return_value=MOCK_POLARIS_STATE)
