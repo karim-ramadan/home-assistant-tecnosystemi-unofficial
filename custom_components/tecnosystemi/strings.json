@@ -16,9 +16,11 @@
       },
       "manual": {
         "title": "Device IP Address",
-        "description": "Enter the IP address of the Tecnosistemi device.",
+        "description": "Enter the IP address and type of the Tecnosistemi device.",
         "data": {
-          "ip": "IP Address"
+          "ip": "IP Address",
+          "device_type": "Device Type",
+          "name": "Friendly Name (optional)"
         }
       },
       "pin": {

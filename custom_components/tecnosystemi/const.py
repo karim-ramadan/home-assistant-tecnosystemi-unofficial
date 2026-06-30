@@ -7,6 +7,10 @@ DOMAIN = "tecnosystemi"
 CONF_IP = "ip"
 CONF_PIN = "pin"
 CONF_SERIAL = "serial"
+CONF_DEVICE_TYPE = "device_type"
+
+DEVICE_TYPE_PICO = "pico"
+DEVICE_TYPE_POLARIS5X = "polaris5x"
 
 COMMON_SUBNETS = ["192.168.1", "192.168.0", "192.168.4"]
 
