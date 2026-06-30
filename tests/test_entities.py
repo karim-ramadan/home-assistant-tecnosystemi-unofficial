@@ -1,16 +1,20 @@
-"""Tests for fan and sensor entities."""
+"""Tests for fan, sensor, and climate entities."""
 
 from unittest.mock import AsyncMock, patch
 
 import pytest
+from homeassistant.components.climate import DOMAIN as CLIMATE_DOMAIN
+from homeassistant.components.climate import HVACMode
 from homeassistant.components.fan import DOMAIN as FAN_DOMAIN
 from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.tecnosystemi.const import (
+    CONF_DEVICE_TYPE,
     CONF_IP,
     CONF_PIN,
     CONF_SERIAL,
+    DEVICE_TYPE_POLARIS5X,
     DOMAIN,
 )
 
@@ -113,3 +117,147 @@ async def test_led_color_sensor(hass: HomeAssistant, loaded_entry) -> None:
     assert state is not None
     assert state.state == "Turchese"
     assert state.attributes["led_color_hex"] == "#4DB6AC"
+
+
+# ---------------------------------------------------------------------------
+# Polaris 5X climate entity tests
+# ---------------------------------------------------------------------------
+
+MOCK_POLARIS_IP = "192.168.1.200"
+MOCK_POLARIS_PIN = "5678"
+MOCK_POLARIS_INFO = {"name": "Test Polaris", "fw_ver": "2.0.0"}
+MOCK_POLARIS_STATE = {
+    "is_off": 0,
+    "is_cool": 0,
+    "cool_mod": 0,
+    "t_can": 200,
+    "f_inv": 2,
+    "f_est": 2,
+    "name": "Test Polaris",
+    "fw_ver": "2.0.0",
+    "zone": [
+        {
+            "nr": 1,
+            "n": "Living Room",
+            "off": 0,
+            "t": 215,
+            "ts": 220,
+            "w": -1,
+            "b": -1,
+            "co": 0,
+            "err": 0,
+        },
+        {
+            "nr": 2,
+            "n": "Bedroom",
+            "off": 1,
+            "t": 180,
+            "ts": 200,
+            "w": -1,
+            "b": -1,
+            "co": 0,
+            "err": 0,
+        },
+    ],
+}
+
+
+@pytest.fixture
+async def loaded_polaris_entry(hass: HomeAssistant):
+    """Set up a Polaris 5X config entry with all network calls mocked."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        unique_id=MOCK_POLARIS_IP,
+        data={
+            CONF_IP: MOCK_POLARIS_IP,
+            CONF_PIN: MOCK_POLARIS_PIN,
+            CONF_SERIAL: MOCK_POLARIS_IP,
+            CONF_DEVICE_TYPE: DEVICE_TYPE_POLARIS5X,
+        },
+        title="Test Polaris",
+    )
+    entry.add_to_hass(hass)
+
+    with (
+        patch("custom_components.tecnosystemi.coordinator.PolarisClient"),
+        patch(
+            "custom_components.tecnosystemi.coordinator.Polaris5XDevice"
+        ) as mock_dev_cls,
+    ):
+        mock_dev = mock_dev_cls.return_value
+        mock_dev.get_state = AsyncMock(return_value=MOCK_POLARIS_STATE)
+        mock_dev.turn_on = AsyncMock(return_value=True)
+        mock_dev.turn_off = AsyncMock(return_value=True)
+        mock_dev.set_mode = AsyncMock(return_value=True)
+        mock_dev.update_zone = AsyncMock(return_value=True)
+
+        await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
+
+        yield entry, mock_dev
+
+
+async def test_polaris_cu_state(hass: HomeAssistant, loaded_polaris_entry) -> None:
+    """CU entity reflects heating mode and canal temperature setpoint."""
+    state = hass.states.get("climate.test_polaris")
+    assert state is not None
+    assert state.state == HVACMode.HEAT
+    assert state.attributes["temperature"] == 20.0  # tc=200 → 20.0 °C
+
+
+async def test_polaris_zone_state(hass: HomeAssistant, loaded_polaris_entry) -> None:
+    """Zone entities reflect correct state and temperature."""
+    zone1 = hass.states.get("climate.test_polaris_living_room")
+    assert zone1 is not None
+    assert zone1.state == HVACMode.HEAT
+    assert zone1.attributes["current_temperature"] == 21.5
+    assert zone1.attributes["temperature"] == 22.0  # ts=220 → 22.0 °C
+
+    zone2 = hass.states.get("climate.test_polaris_bedroom")
+    assert zone2 is not None
+    assert zone2.state == HVACMode.OFF
+
+
+async def test_polaris_cu_turn_off(hass: HomeAssistant, loaded_polaris_entry) -> None:
+    """Setting CU to OFF calls turn_off on the device."""
+    entry, mock_dev = loaded_polaris_entry
+    await hass.services.async_call(
+        CLIMATE_DOMAIN,
+        "set_hvac_mode",
+        {"entity_id": "climate.test_polaris", "hvac_mode": HVACMode.OFF},
+        blocking=True,
+    )
+    mock_dev.turn_off.assert_called_once()
+
+
+async def test_polaris_cu_set_temperature(
+    hass: HomeAssistant, loaded_polaris_entry
+) -> None:
+    """Setting canal temperature on the CU entity calls set_canal_temperature."""
+    entry, mock_dev = loaded_polaris_entry
+    mock_dev.set_canal_temperature = AsyncMock(return_value=True)
+    await hass.services.async_call(
+        CLIMATE_DOMAIN,
+        "set_temperature",
+        {"entity_id": "climate.test_polaris", "temperature": 22.0},
+        blocking=True,
+    )
+    mock_dev.set_canal_temperature.assert_called_once_with(22.0)
+
+
+async def test_polaris_zone_set_temperature(
+    hass: HomeAssistant, loaded_polaris_entry
+) -> None:
+    """Setting temperature on a zone calls update_zone with correct setpoint."""
+    entry, mock_dev = loaded_polaris_entry
+    await hass.services.async_call(
+        CLIMATE_DOMAIN,
+        "set_temperature",
+        {"entity_id": "climate.test_polaris_living_room", "temperature": 21.0},
+        blocking=True,
+    )
+    mock_dev.update_zone.assert_called_once()
+    call_kwargs = mock_dev.update_zone.call_args.kwargs
+    assert call_kwargs["zone_id"] == 1
+    assert call_kwargs["set_temp"] == 21.0
+    assert call_kwargs["is_off"] == 0

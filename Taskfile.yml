@@ -1,0 +1,43 @@
+version: "3"
+
+tasks:
+  install:
+    desc: Install dependencies
+    cmd: uv sync --frozen
+
+  pre-commit:
+    desc: Run pre-commit on all files (mirrors CI pre-commit job)
+    deps: [install]
+    cmd: uv run pre-commit run --all-files --show-diff-on-failure --color=always
+
+  tests:
+    desc: Run test suite (mirrors CI tests job)
+    deps: [install]
+    cmd: uv run pytest --timeout=9 --durations=10 -n auto -p no:sugar tests
+
+  hacs:
+    desc: Run HACS validation (requires Docker)
+    cmd: >
+      docker run --rm
+      -v "{{.ROOT_DIR}}:/github/workspace"
+      -e INPUT_CATEGORY=integration
+      -e INPUT_IGNORE=brands
+      ghcr.io/hacs/action:main
+
+  hassfest:
+    desc: Run hassfest validation (requires Docker)
+    cmd: >
+      docker run --rm
+      -v "{{.ROOT_DIR}}:/github/workspace"
+      ghcr.io/home-assistant/action-hassfest:master
+
+  fix:
+    desc: Auto-fix linting and formatting issues with ruff
+    deps: [install]
+    cmds:
+      - uv run ruff check --fix .
+      - uv run ruff format .
+
+  ci:
+    desc: Run all CI steps (pre-commit, tests, hacs, hassfest)
+    deps: [pre-commit, tests, hacs, hassfest]

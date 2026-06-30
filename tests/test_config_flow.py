@@ -7,9 +7,12 @@ from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.tecnosystemi.const import (
+    CONF_DEVICE_TYPE,
     CONF_IP,
     CONF_PIN,
     CONF_SERIAL,
+    DEVICE_TYPE_PICO,
+    DEVICE_TYPE_POLARIS5X,
     DOMAIN,
 )
 
@@ -121,7 +124,7 @@ async def test_config_flow_manual(
     assert result["step_id"] == "manual"
 
     result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], {CONF_IP: MOCK_IP}
+        result["flow_id"], {CONF_IP: MOCK_IP, CONF_DEVICE_TYPE: DEVICE_TYPE_PICO}
     )
     assert result["step_id"] == "pin"
 
@@ -129,6 +132,7 @@ async def test_config_flow_manual(
         result["flow_id"], {CONF_PIN: MOCK_PIN}
     )
     assert result["type"] == "create_entry"
+    assert result["data"][CONF_DEVICE_TYPE] == DEVICE_TYPE_PICO
 
 
 async def test_config_flow_invalid_pin(
@@ -143,7 +147,7 @@ async def test_config_flow_invalid_pin(
         result["flow_id"], {"next_step_id": "manual"}
     )
     result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], {CONF_IP: MOCK_IP}
+        result["flow_id"], {CONF_IP: MOCK_IP, CONF_DEVICE_TYPE: DEVICE_TYPE_PICO}
     )
 
     with patch(
@@ -198,10 +202,107 @@ async def test_duplicate_device_aborted(
         result["flow_id"], {"next_step_id": "manual"}
     )
     result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], {CONF_IP: MOCK_IP}
+        result["flow_id"], {CONF_IP: MOCK_IP, CONF_DEVICE_TYPE: DEVICE_TYPE_PICO}
     )
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"], {CONF_PIN: MOCK_PIN}
     )
     assert result["type"] == "abort"
     assert result["reason"] == "already_configured"
+
+
+MOCK_POLARIS_IP = "192.168.1.200"
+MOCK_POLARIS_PIN = "5678"
+MOCK_POLARIS_INFO = {"name": "Test Polaris", "fw_ver": "2.0.0"}
+MOCK_POLARIS_STATE = {
+    "is_off": 0,
+    "is_cool": 0,
+    "cool_mod": 0,
+    "t_can": 200,
+    "f_inv": 2,
+    "f_est": 2,
+    "name": "Test Polaris",
+    "fw_ver": "2.0.0",
+    "zone": [
+        {
+            "nr": 1,
+            "n": "Living Room",
+            "off": 0,
+            "t": 215,
+            "ts": 220,
+            "w": -1,
+            "b": -1,
+            "co": 0,
+            "err": 0,
+        },
+        {
+            "nr": 2,
+            "n": "Bedroom",
+            "off": 1,
+            "t": 180,
+            "ts": 200,
+            "w": -1,
+            "b": -1,
+            "co": 0,
+            "err": 0,
+        },
+    ],
+}
+
+
+@pytest.fixture
+def mock_validate_polaris_and_fetch_info():
+    with patch(
+        "custom_components.tecnosystemi.config_flow._validate_polaris_and_fetch_info",
+        new_callable=AsyncMock,
+        return_value=MOCK_POLARIS_INFO,
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture
+def mock_polaris_coordinator_setup():
+    with (
+        patch("custom_components.tecnosystemi.coordinator.PolarisClient"),
+        patch(
+            "custom_components.tecnosystemi.coordinator.Polaris5XDevice"
+        ) as mock_dev_cls,
+    ):
+        mock_dev = mock_dev_cls.return_value
+        mock_dev.get_state = AsyncMock(return_value=MOCK_POLARIS_STATE)
+        mock_dev.turn_on = AsyncMock(return_value=True)
+        mock_dev.turn_off = AsyncMock(return_value=True)
+        mock_dev.set_mode = AsyncMock(return_value=True)
+        mock_dev.update_zone = AsyncMock(return_value=True)
+        yield mock_dev
+
+
+async def test_config_flow_polaris_manual(
+    hass: HomeAssistant,
+    mock_validate_polaris_and_fetch_info,
+    mock_polaris_coordinator_setup,
+) -> None:
+    """Polaris 5X manual entry → PIN → entry created with correct device type."""
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": "user"}
+    )
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {"next_step_id": "manual"}
+    )
+    assert result["step_id"] == "manual"
+
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        {CONF_IP: MOCK_POLARIS_IP, CONF_DEVICE_TYPE: DEVICE_TYPE_POLARIS5X},
+    )
+    assert result["step_id"] == "pin"
+
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {CONF_PIN: MOCK_POLARIS_PIN}
+    )
+    assert result["type"] == "create_entry"
+    assert result["title"] == MOCK_POLARIS_INFO["name"]
+    assert result["data"][CONF_IP] == MOCK_POLARIS_IP
+    assert result["data"][CONF_PIN] == MOCK_POLARIS_PIN
+    assert result["data"][CONF_DEVICE_TYPE] == DEVICE_TYPE_POLARIS5X
+    assert result["data"][CONF_SERIAL] == MOCK_POLARIS_IP  # IP used as serial

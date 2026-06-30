@@ -2486,11 +2486,11 @@ requires-dist = [{ name = "awesomeversion", specifier = ">=24.6.0" }]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "pre-commit", specifier = "==3.7.0" },
+    { name = "pre-commit", specifier = "==4.6.0" },
     { name = "pytest-asyncio" },
     { name = "pytest-homeassistant-custom-component" },
     { name = "ruff", specifier = ">=0.11.8" },
-    { name = "tecnosystemi-unofficial", specifier = ">=0.4.2" },
+    { name = "tecnosystemi-unofficial", specifier = ">=1.0.0" },
 ]
 
 [[package]]
@@ -3868,7 +3868,7 @@ wheels = [
 
 [[package]]
 name = "pre-commit"
-version = "3.7.0"
+version = "4.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cfgv" },
@@ -3878,9 +3878,9 @@ dependencies = [
     { name = "pyyaml", version = "6.0.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13.2'" },
     { name = "virtualenv" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/60/62/691bb4109735ea4b8eb69f4a68110ece4c7ec4a7ce0144996e7302eb5eef/pre_commit-3.7.0.tar.gz", hash = "sha256:e209d61b8acdcf742404408531f0c37d49d2c734fd7cff2d6076083d191cb060", size = 177305, upload-time = "2024-03-24T17:37:47.756Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8e/22/2de9408ac81acbb8a7d05d4cc064a152ccf33b3d480ebe0cd292153db239/pre_commit-4.6.0.tar.gz", hash = "sha256:718d2208cef53fdc38206e40524a6d4d9576d103eb16f0fec11c875e7716e9d9", size = 198525, upload-time = "2026-04-21T20:31:41.613Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/53/1a/1870d52d0d86d534d4d5f7a58e65d40a4610b57e13309917faa9e62818fe/pre_commit-3.7.0-py2.py3-none-any.whl", hash = "sha256:5eae9e10c2b5ac51577c3452ec0a490455c45a0533f7960f993a0d01e59decab", size = 204250, upload-time = "2024-03-24T17:37:45.887Z" },
+    { url = "https://files.pythonhosted.org/packages/80/6e/4b28b62ecb6aae56769c34a8ff1d661473ec1e9519e2d5f8b2c150086b26/pre_commit-4.6.0-py2.py3-none-any.whl", hash = "sha256:e2cf246f7299edcabcf15f9b0571fdce06058527f0a06535068a86d38089f29b", size = 226472, upload-time = "2026-04-21T20:31:40.092Z" },
 ]
 
 [[package]]
@@ -5893,15 +5893,15 @@ wheels = [
 
 [[package]]
 name = "tecnosystemi-unofficial"
-version = "0.4.2"
+version = "1.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jinja2", version = "3.1.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
     { name = "jinja2", version = "3.1.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a7/8a/7e21f1d5e8c58c46a429d768dec54bb2a00c57136fa220d9662bb0d1b8f7/tecnosystemi_unofficial-0.4.2.tar.gz", hash = "sha256:20ce3c5196e16f587d75e9e90c8179e4a0e3635d3df914af394cbdc2045ed12d", size = 24104, upload-time = "2026-05-06T23:02:33.882Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/31/77/a4d29e02d93eb4bef635dfdb2fe2083b104cb0613afc329cee3d2c3a930b/tecnosystemi_unofficial-1.0.0.tar.gz", hash = "sha256:48350b64d5ac47c4b5fa6eee6b18ccdbc83c8508296c308e31f3346fecc60c4b", size = 34306, upload-time = "2026-06-30T08:46:40.075Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/97/79/2cc19228be5713618b59bd9a0013453561c1cc2d1e185b982f6fd7a8d6d8/tecnosystemi_unofficial-0.4.2-py3-none-any.whl", hash = "sha256:a2a9370330bd9a4174b21e51a59e9be4d9adf96589fae679ef4ad25d650ab7d7", size = 33034, upload-time = "2026-05-06T23:02:32.271Z" },
+    { url = "https://files.pythonhosted.org/packages/c7/cf/7fc52929967eaad22aee7fd529f89bcdc5b22d583f1516b2fb2c122521d8/tecnosystemi_unofficial-1.0.0-py3-none-any.whl", hash = "sha256:0b19d4c09343b23799fad3f08a147a7bed3dc44f217ed9b2fcf652766d85d308", size = 49440, upload-time = "2026-06-30T08:46:38.808Z" },
 ]
 
 [[package]]
