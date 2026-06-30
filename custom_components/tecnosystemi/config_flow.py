@@ -26,7 +26,7 @@ RECV_PORT = 40069
 
 
 def _do_discovery(
-    subnets: list[str] = COMMON_SUBNETS, timeout: float = 2.0
+    subnets: list[str] = COMMON_SUBNETS, timeout: float = 15.0
 ) -> list[str]:
     """Broadcast UDP probe and return responding device IPs."""
     from tecnosystemi_unofficial.shared_listener import SharedUDPListener

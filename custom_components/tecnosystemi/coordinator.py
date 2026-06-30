@@ -46,7 +46,7 @@ class TecnosystemiCoordinator(DataUpdateCoordinator[dict]):
 
     async def _async_setup(self) -> None:
         """Start the client and fetch static device info."""
-        self._client = TecnoClient(ip=self._ip, timeout=25.0)
+        self._client = TecnoClient(ip=self._ip, timeout=40.0)
         self.pico = PicoDevice(self._client, pin=self._pin)
 
         try:
@@ -70,8 +70,9 @@ class TecnosystemiCoordinator(DataUpdateCoordinator[dict]):
     # ------------------------------------------------------------------
 
     async def _async_update_data(self) -> dict:
-        async with self._lock:
-            state = await self.pico.get_state()
+        if self._lock.locked():
+            return self.data or {}
+        state = await self.pico.get_state()
         if state is None:
             raise UpdateFailed(f"No response from {self._ip} (timeout)")
         return state
