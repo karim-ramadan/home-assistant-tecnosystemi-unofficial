@@ -1,16 +1,12 @@
 {
   "domain": "tecnosystemi",
   "name": "Tecnosistemi (Unofficial)",
-  "codeowners": [
-    "@karim-ramadan"
-  ],
+  "codeowners": ["@karim-ramadan"],
   "config_flow": true,
   "documentation": "https://github.com/karim-ramadan/home-assistant-tecnosystemi-unofficial",
   "integration_type": "device",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/karim-ramadan/home-assistant-tecnosystemi-unofficial/issues",
-  "requirements": [
-    "tecnosystemi-unofficial>=1.0.0"
-  ],
+  "requirements": ["tecnosystemi-unofficial>=1.0.0"],
   "version": "0.2.0"
 }
