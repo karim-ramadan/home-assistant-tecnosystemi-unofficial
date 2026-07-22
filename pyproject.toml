@@ -13,7 +13,7 @@ dev = [
     "pytest-asyncio",
     "tecnosystemi-unofficial>=1.0.0",
     "ruff>=0.11.8",
-    "pre-commit==4.6.0",
+    "pre-commit==4.6.1",
 ]
 
 [tool.ruff]
